@@ -7,15 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     
     strategy:
+      fail-fast: false
       matrix:
-        pyqt: ['PyQt5', 'PySide2']
+        pyqt: ['PyQt5', 'PySide2', 'PyQt6']
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
       - name: Prepare GUI tests
         run: |
           sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0

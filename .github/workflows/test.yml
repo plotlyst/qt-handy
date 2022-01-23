@@ -5,7 +5,11 @@ on: [ push ]
 jobs:
   gui_test:
     runs-on: ubuntu-latest
-
+    
+    strategy:
+      matrix:
+        pyqt: ['PyQt5', 'PySide2']
+    
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -22,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest-xvfb
           pip install -e .[dev]
-          pip install PyQt5
+          pip install ${{ matrix.pyqt }}
       - name: Test with pytest
         run: |
           ./test.sh

@@ -22,7 +22,7 @@ REQUIREMENTS: dict = {
 }
 
 setup(
-    name='',
+    name='qt-handy',
     version='0.1.0',
 
     author='Zsolt Kovari',

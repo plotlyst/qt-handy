@@ -36,18 +36,18 @@ def vspacer(max_height: Optional[int] = None) -> QWidget:
 
 
 def hspacer(max_width: Optional[int] = None) -> QWidget:
-    return spacer(max_width, vertical=False)
+    return spacer(max_width)
 
 
 def line(vertical: bool = False, parent: Optional[QWidget] = None) -> QFrame:
-    line = QFrame(parent)
+    line_ = QFrame(parent)
     if vertical:
-        line.setFrameShape(QFrame.VLine)
+        line_.setFrameShape(QFrame.VLine)
     else:
-        line.setFrameShape(QFrame.HLine)
-    line.setFrameShadow(QFrame.Sunken)
+        line_.setFrameShape(QFrame.HLine)
+    line_.setFrameShadow(QFrame.Sunken)
 
-    return line
+    return line_
 
 
 def vline(parent: Optional[QWidget] = None) -> QFrame:

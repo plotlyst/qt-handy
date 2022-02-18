@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QSizePolicy, QHBoxLayout, QVBoxLayout
 
-from qthandy import vbox, clear_layout, hbox
+from qthandy import vbox, clear_layout, hbox, margins
 
 
 def test_clear_layout(qtbot):
@@ -39,3 +39,23 @@ def test_vbox(qtbot):
     assert widget.layout() is not None
     assert widget.layout() is layout
     assert isinstance(widget.layout(), QVBoxLayout)
+
+
+def test_margins(qtbot):
+    widget = QWidget()
+    qtbot.addWidget(widget)
+    widget.show()
+
+    vbox(widget)
+    margins(widget, left=1)
+
+    assert widget.layout().contentsMargins().left() == 1
+    assert widget.layout().contentsMargins().right() == 2
+    assert widget.layout().contentsMargins().top() == 2
+    assert widget.layout().contentsMargins().bottom() == 2
+
+    margins(widget, top=20, bottom=0, right=3)
+    assert widget.layout().contentsMargins().left() == 1
+    assert widget.layout().contentsMargins().right() == 3
+    assert widget.layout().contentsMargins().top() == 20
+    assert widget.layout().contentsMargins().bottom() == 0

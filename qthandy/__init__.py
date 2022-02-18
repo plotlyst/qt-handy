@@ -152,3 +152,19 @@ def vbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QVBoxLayout:
     widget.layout().setSpacing(spacing)
 
     return _layout
+
+
+def margins(widget: QWidget, left=None, top=None, right=None, bottom=None):
+    if widget.layout() is None:
+        raise ValueError('Widget does not have a layout. Set a layout first to change the margins.')
+    margins_ = widget.layout().contentsMargins()
+    if left is not None:
+        margins_.setLeft(left)
+    if top is not None:
+        margins_.setTop(top)
+    if right is not None:
+        margins_.setRight(right)
+    if bottom is not None:
+        margins_.setBottom(bottom)
+
+    widget.layout().setContentsMargins(margins_)

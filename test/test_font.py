@@ -1,6 +1,6 @@
 from qtpy.QtWidgets import QWidget
 
-from qthandy import bold, italic, incr_font, decr_font
+from qthandy import bold, italic, incr_font, decr_font, underline
 
 
 def test_bold(qtbot):
@@ -10,11 +10,18 @@ def test_bold(qtbot):
     assert widget.font().bold()
 
 
-def test_italiz(qtbot):
+def test_italic(qtbot):
     widget = QWidget()
     italic(widget)
 
     assert widget.font().italic()
+
+
+def test_underline(qtbot):
+    widget = QWidget()
+    underline(widget)
+
+    assert widget.font().underline()
 
 
 def test_increase_font(qtbot):

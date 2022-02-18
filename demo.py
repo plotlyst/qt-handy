@@ -1,6 +1,9 @@
 import sys
 
-from qtpy.QtWidgets import QMainWindow, QApplication, QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QLabel
+from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
+
+from qthandy import underline, bold, vbox
 
 
 class MainWindow(QMainWindow):
@@ -10,14 +13,18 @@ class MainWindow(QMainWindow):
         self.widget = QWidget(self)
         self.setCentralWidget(self.widget)
 
-        self.widget.setLayout(QVBoxLayout())
+        self.lbl = QLabel('Underline Text')
+        underline(self.lbl)
+        bold(self.lbl)
+
+        vbox(self.widget)
+        self.widget.layout().addWidget(self.lbl)
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MainWindow()
 
-    window.move(QApplication.desktop().screen().rect().center())
     window.show()
 
     app.exec()

@@ -35,10 +35,6 @@ def vspacer(max_height: Optional[int] = None) -> QWidget:
     return spacer(max_height, vertical=True)
 
 
-def hspacer(max_width: Optional[int] = None) -> QWidget:
-    return spacer(max_width)
-
-
 def line(vertical: bool = False, parent: Optional[QWidget] = None) -> QFrame:
     line_ = QFrame(parent)
     if vertical:
@@ -52,10 +48,6 @@ def line(vertical: bool = False, parent: Optional[QWidget] = None) -> QFrame:
 
 def vline(parent: Optional[QWidget] = None) -> QFrame:
     return line(vertical=True, parent=parent)
-
-
-def hline(parent: Optional[QWidget] = None) -> QFrame:
-    return line(parent=parent)
 
 
 def busy(func):
@@ -107,19 +99,25 @@ def italic(widget: QWidget, enabled: bool = True):
     widget.setFont(font)
 
 
-def gc(object: QObject):
-    object.setParent(None)
-    object.deleteLater()
+def underline(widget: QWidget, enabled: bool = True):
+    font = widget.font()
+    font.setUnderline(enabled)
+    widget.setFont(font)
 
 
-def btn_popup(btn: Union[QPushButton, QToolButton], popup: QWidget, showMenuIcon: bool = True):
+def gc(obj: QObject):
+    obj.setParent(None)
+    obj.deleteLater()
+
+
+def btn_popup(btn: Union[QPushButton, QToolButton], popup: QWidget, show_menu_icon: bool = True):
     menu = QMenu(btn)
     action = QWidgetAction(menu)
     action.setDefaultWidget(popup)
     menu.addAction(action)
     if isinstance(btn, QToolButton):
         btn.setPopupMode(QToolButton.InstantPopup)
-    if not showMenuIcon:
+    if not show_menu_icon:
         btn.setStyleSheet(f'{btn.styleSheet()}\n{btn.__class__.__name__}::menu-indicator {{width:0px;}}')
     btn.setMenu(menu)
 

@@ -76,6 +76,10 @@ def test_flow(qtbot):
 
     for i in range(15):
         widget.layout().addWidget(QLabel(f'Label {i + 1}'))
+    assert widget.layout().count() == 15
+    w = widget.size().width()
+    h = widget.size().height()
+    widget.resize(w // 2, h // 2)
 
     assert widget.layout().count() == 15
 

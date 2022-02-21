@@ -1,6 +1,7 @@
 import functools
 from typing import Optional, Union
 
+from PyQt6.QtWidgets import QGraphicsOpacityEffect
 from qtpy.QtCore import Qt, QObject
 from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
@@ -103,6 +104,12 @@ def underline(widget: QWidget, enabled: bool = True):
     font = widget.font()
     font.setUnderline(enabled)
     widget.setFont(font)
+
+
+def opaque(wdg: QWidget, opacity: float = 0.5):
+    op = QGraphicsOpacityEffect(wdg)
+    op.setOpacity(opacity)
+    wdg.setGraphicsEffect(op)
 
 
 def gc(obj: QObject):

@@ -3,7 +3,7 @@ import sys
 from qtpy.QtWidgets import QLabel, QPushButton, QMenu
 from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
 
-from qthandy import underline, bold, vbox, btn_popup_menu
+from qthandy import underline, bold, vbox, btn_popup_menu, ask_confirmation
 
 
 class MainWindow(QMainWindow):
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.btnWithMenu = QPushButton('Btn with menu')
 
         menu = QMenu(self.btnWithMenu)
-        menu.addAction('Test')
+        menu.addAction('Test', lambda: ask_confirmation('Test'))
         btn_popup_menu(self.btnWithMenu, menu)
         self.widget.layout().addWidget(self.lbl)
         self.widget.layout().addWidget(self.btnWithMenu)

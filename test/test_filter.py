@@ -13,3 +13,4 @@ def test_instant_tooltip(qtbot):
     qtbot.mouseMove(btn)
 
     assert QToolTip.isVisible()
+    assert QToolTip.text() == 'Test button'

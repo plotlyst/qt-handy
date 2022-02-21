@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.widget)
         vbox(self.widget)
 
-        self.lbl = QLabel('Underline Text')
+        self.lbl = QLabel('Bold, underline Text')
         underline(self.lbl)
         bold(self.lbl)
 

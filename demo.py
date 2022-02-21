@@ -4,6 +4,7 @@ from qtpy.QtWidgets import QLabel, QPushButton, QMenu
 from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
 
 from qthandy import underline, bold, vbox, btn_popup_menu, ask_confirmation
+from qthandy.filter import InstantTooltipEventFilter
 
 
 class MainWindow(QMainWindow):
@@ -19,6 +20,8 @@ class MainWindow(QMainWindow):
         bold(self.lbl)
 
         self.btnWithMenu = QPushButton('Btn with menu')
+        self.btnWithMenu.setToolTip('Test tooltip')
+        self.btnWithMenu.installEventFilter(InstantTooltipEventFilter(self.btnWithMenu))
 
         menu = QMenu(self.btnWithMenu)
         menu.addAction('Test', lambda: ask_confirmation('Test'))

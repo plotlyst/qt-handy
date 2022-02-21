@@ -1,6 +1,6 @@
-from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QSizePolicy, QHBoxLayout, QVBoxLayout
+from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QSizePolicy, QHBoxLayout, QVBoxLayout, QLabel
 
-from qthandy import vbox, clear_layout, hbox, margins
+from qthandy import vbox, clear_layout, hbox, margins, flow, FlowLayout
 
 
 def test_clear_layout(qtbot):
@@ -59,3 +59,25 @@ def test_margins(qtbot):
     assert widget.layout().contentsMargins().right() == 3
     assert widget.layout().contentsMargins().top() == 20
     assert widget.layout().contentsMargins().bottom() == 0
+
+
+def test_flow(qtbot):
+    widget = QWidget()
+    qtbot.addWidget(widget)
+    widget.show()
+
+    flow(widget)
+
+    assert isinstance(widget.layout(), FlowLayout)
+    assert widget.layout().contentsMargins().left() == 2
+    assert widget.layout().spacing() == 3
+
+    assert widget.layout().count() == 0
+
+    for i in range(15):
+        widget.layout().addWidget(QLabel(f'Label {i + 1}'))
+
+    assert widget.layout().count() == 15
+
+    clear_layout(widget)
+    assert widget.layout().count() == 0

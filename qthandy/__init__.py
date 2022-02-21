@@ -1,11 +1,10 @@
 import functools
 from typing import Optional, Union
 
-from PyQt6.QtWidgets import QGraphicsOpacityEffect
 from qtpy.QtCore import Qt, QObject
 from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
-    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout
+    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect
 
 
 def ask_confirmation(message: str, parent: Optional[QWidget] = None) -> bool:
@@ -133,7 +132,7 @@ def btn_popup_menu(btn: Union[QPushButton, QToolButton], menu: QMenu, show_menu_
     btn.setMenu(menu)
 
 
-def clear_layout(target: Union[QWidget, QLayout]):
+def clear_layout(target: Union[QWidget, QLayout], auto_delete: bool = True):
     if isinstance(target, QWidget):
         layout_: QLayout = target.layout()
     else:
@@ -144,7 +143,10 @@ def clear_layout(target: Union[QWidget, QLayout]):
     while layout_.count():
         item = layout_.takeAt(0)
         if item.widget():
-            gc(item.widget())
+            if auto_delete:
+                gc(item.widget())
+            else:
+                item.widget().setParent(None)
 
 
 def hbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QHBoxLayout:

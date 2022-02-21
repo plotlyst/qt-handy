@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QLabel
+from qtpy.QtWidgets import QLabel
 
 from qthandy import opaque
 

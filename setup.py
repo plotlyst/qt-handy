@@ -27,14 +27,14 @@ setup(
     version='0.1.0',
 
     author='Zsolt Kovari',
-    author_email='',
-    description='',
+    author_email='zsolt@kovaridev.com',
+    description='A collection of useful Qt utilities and event filters for PyQt/PySide',
     long_description=LONG_DESCRIPTION,
     long_description_content_type='text/markdown',
-    url='',
+    url='https://github.com/plotlyst/qt-handy',
 
     packages=find_packages(),
-    python_requires='>=3.6, <4',
+    python_requires='>=3.7, <4',
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

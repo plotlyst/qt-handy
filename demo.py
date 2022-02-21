@@ -3,7 +3,7 @@ import sys
 from qtpy.QtWidgets import QLabel, QPushButton, QMenu
 from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
 
-from qthandy import underline, bold, vbox, btn_popup_menu, ask_confirmation
+from qthandy import underline, bold, vbox, btn_popup_menu, ask_confirmation, flow
 from qthandy.filter import InstantTooltipEventFilter
 
 
@@ -26,8 +26,16 @@ class MainWindow(QMainWindow):
         menu = QMenu(self.btnWithMenu)
         menu.addAction('Test', lambda: ask_confirmation('Test'))
         btn_popup_menu(self.btnWithMenu, menu)
+
+        self.wdgFlow = QWidget()
+        flow(self.wdgFlow)
+
+        for i in range(15):
+            self.wdgFlow.layout().addWidget(QLabel(f'Label {i + 1}'))
+
         self.widget.layout().addWidget(self.lbl)
         self.widget.layout().addWidget(self.btnWithMenu)
+        self.widget.layout().addWidget(self.wdgFlow)
 
 
 if __name__ == '__main__':

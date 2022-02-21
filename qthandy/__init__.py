@@ -6,6 +6,8 @@ from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
     QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect
 
+from qthandy.layout import FlowLayout
+
 
 def ask_confirmation(message: str, parent: Optional[QWidget] = None) -> bool:
     """Raise a confirmation dialog. Return True if the user clicked Yes, False otherwise."""
@@ -160,6 +162,15 @@ def hbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QHBoxLayout:
 
 def vbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QVBoxLayout:
     _layout = QVBoxLayout()
+    widget.setLayout(_layout)
+    widget.layout().setContentsMargins(margin, margin, margin, margin)
+    widget.layout().setSpacing(spacing)
+
+    return _layout
+
+
+def flow(widget: QWidget, margin: int = 2, spacing: int = 3) -> FlowLayout:
+    _layout = FlowLayout()
     widget.setLayout(_layout)
     widget.layout().setContentsMargins(margin, margin, margin, margin)
     widget.layout().setSpacing(spacing)

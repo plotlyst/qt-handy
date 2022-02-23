@@ -1,5 +1,5 @@
 import functools
-from typing import Optional, Union, Type
+from typing import Optional, Union
 
 from qtpy.QtCore import Qt, QObject
 from qtpy.QtGui import QCursor
@@ -9,7 +9,7 @@ from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFra
 from qthandy.layout import FlowLayout
 
 
-def ask_confirmation(message: str, parent: Optional[QWidget] = None) -> bool:
+def ask_confirmation(message: str, parent=None) -> bool:
     """Raise a confirmation dialog. Return True if the user clicked Yes, False otherwise."""
     QApplication.setOverrideCursor(QCursor(Qt.CursorShape.ArrowCursor))
     status: int = QMessageBox.question(parent, 'Confirmation', message)
@@ -37,7 +37,7 @@ def vspacer(max_height: Optional[int] = None) -> QWidget:
     return spacer(max_height, vertical=True)
 
 
-def line(vertical: bool = False, parent: Optional[QWidget] = None) -> QFrame:
+def line(vertical: bool = False, parent=None) -> QFrame:
     line_ = QFrame(parent)
     if vertical:
         line_.setFrameShape(QFrame.VLine)
@@ -48,7 +48,7 @@ def line(vertical: bool = False, parent: Optional[QWidget] = None) -> QFrame:
     return line_
 
 
-def vline(parent: Optional[QWidget] = None) -> QFrame:
+def vline(parent=None) -> QFrame:
     return line(vertical=True, parent=parent)
 
 
@@ -64,50 +64,50 @@ def busy(func):
     return wrapper_timer
 
 
-def retain_when_hidden(widget: QWidget):
+def retain_when_hidden(widget):
     policy = widget.sizePolicy()
     policy.setRetainSizeWhenHidden(True)
     widget.setSizePolicy(policy)
 
 
-def transparent(widget: QWidget):
+def transparent(widget):
     if isinstance(widget, QLabel):
         widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
     else:
         widget.setStyleSheet(f'{widget.__class__.__name__} {{border: 0px; background-color: rgba(0, 0, 0, 0);}}')
 
 
-def incr_font(widget: QWidget, step: int = 1):
+def incr_font(widget, step: int = 1):
     font = widget.font()
     font.setPointSize(font.pointSize() + 1 * step)
     widget.setFont(font)
 
 
-def decr_font(widget: QWidget, step: int = 1):
+def decr_font(widget, step: int = 1):
     font = widget.font()
     font.setPointSize(font.pointSize() - 1 * step)
     widget.setFont(font)
 
 
-def bold(widget: QWidget, enabled: bool = True):
+def bold(widget, enabled: bool = True):
     font = widget.font()
     font.setBold(enabled)
     widget.setFont(font)
 
 
-def italic(widget: QWidget, enabled: bool = True):
+def italic(widget, enabled: bool = True):
     font = widget.font()
     font.setItalic(enabled)
     widget.setFont(font)
 
 
-def underline(widget: QWidget, enabled: bool = True):
+def underline(widget, enabled: bool = True):
     font = widget.font()
     font.setUnderline(enabled)
     widget.setFont(font)
 
 
-def opaque(wdg: QWidget, opacity: float = 0.5):
+def opaque(wdg, opacity: float = 0.5):
     op = QGraphicsOpacityEffect(wdg)
     op.setOpacity(opacity)
     wdg.setGraphicsEffect(op)
@@ -118,10 +118,10 @@ def gc(obj: QObject):
     obj.deleteLater()
 
 
-def btn_popup(btn: Union[QPushButton, QToolButton], popup: Type[QWidget], show_menu_icon: bool = False):
+def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, show_menu_icon: bool = False):
     menu = QMenu(btn)
     action = QWidgetAction(menu)
-    action.setDefaultWidget(popup)
+    action.setDefaultWidget(popup_widget)
     menu.addAction(action)
     btn_popup_menu(btn, menu, show_menu_icon)
 
@@ -151,7 +151,7 @@ def clear_layout(target: Union[QWidget, QLayout], auto_delete: bool = True):
                 item.widget().setParent(None)
 
 
-def hbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QHBoxLayout:
+def hbox(widget, margin: int = 2, spacing: int = 3) -> QHBoxLayout:
     _layout = QHBoxLayout()
     widget.setLayout(_layout)
     widget.layout().setContentsMargins(margin, margin, margin, margin)
@@ -160,7 +160,7 @@ def hbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QHBoxLayout:
     return _layout
 
 
-def vbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QVBoxLayout:
+def vbox(widget, margin: int = 2, spacing: int = 3) -> QVBoxLayout:
     _layout = QVBoxLayout()
     widget.setLayout(_layout)
     widget.layout().setContentsMargins(margin, margin, margin, margin)
@@ -169,7 +169,7 @@ def vbox(widget: QWidget, margin: int = 2, spacing: int = 3) -> QVBoxLayout:
     return _layout
 
 
-def flow(widget: QWidget, margin: int = 2, spacing: int = 3) -> FlowLayout:
+def flow(widget, margin: int = 2, spacing: int = 3) -> FlowLayout:
     _layout = FlowLayout()
     widget.setLayout(_layout)
     widget.layout().setContentsMargins(margin, margin, margin, margin)
@@ -178,7 +178,7 @@ def flow(widget: QWidget, margin: int = 2, spacing: int = 3) -> FlowLayout:
     return _layout
 
 
-def margins(widget: QWidget, left=None, top=None, right=None, bottom=None):
+def margins(widget, left=None, top=None, right=None, bottom=None):
     if widget.layout() is None:
         raise ValueError('Widget does not have a layout. Set a layout first to change the margins.')
     margins_ = widget.layout().contentsMargins()

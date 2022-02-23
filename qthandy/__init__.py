@@ -1,5 +1,5 @@
 import functools
-from typing import Optional, Union
+from typing import Optional, Union, Type
 
 from qtpy.QtCore import Qt, QObject
 from qtpy.QtGui import QCursor
@@ -118,7 +118,7 @@ def gc(obj: QObject):
     obj.deleteLater()
 
 
-def btn_popup(btn: Union[QPushButton, QToolButton], popup: QWidget, show_menu_icon: bool = False):
+def btn_popup(btn: Union[QPushButton, QToolButton], popup: Type[QWidget], show_menu_icon: bool = False):
     menu = QMenu(btn)
     action = QWidgetAction(menu)
     action.setDefaultWidget(popup)

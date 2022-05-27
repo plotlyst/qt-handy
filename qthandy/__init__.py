@@ -118,12 +118,14 @@ def gc(obj: QObject):
     obj.deleteLater()
 
 
-def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, show_menu_icon: bool = False):
+def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, show_menu_icon: bool = False) -> QMenu:
     menu = QMenu(btn)
     action = QWidgetAction(menu)
     action.setDefaultWidget(popup_widget)
     menu.addAction(action)
     btn_popup_menu(btn, menu, show_menu_icon)
+
+    return menu
 
 
 def btn_popup_menu(btn: Union[QPushButton, QToolButton], menu: QMenu, show_menu_icon: bool = False):

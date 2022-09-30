@@ -1,6 +1,6 @@
-from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QHBoxLayout, QVBoxLayout, QLabel
+from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QHBoxLayout, QVBoxLayout, QLabel, QGridLayout
 
-from qthandy import vbox, clear_layout, hbox, margins, flow, FlowLayout
+from qthandy import vbox, clear_layout, hbox, margins, flow, FlowLayout, grid
 
 
 def test_clear_layout(qtbot):
@@ -39,6 +39,21 @@ def test_vbox(qtbot):
     assert widget.layout() is not None
     assert widget.layout() is layout
     assert isinstance(widget.layout(), QVBoxLayout)
+
+
+def test_grid(qtbot):
+    widget = QWidget()
+    qtbot.addWidget(widget)
+    widget.show()
+
+    layout = grid(widget)
+
+    assert widget.layout() is not None
+    assert widget.layout() is layout
+    assert isinstance(widget.layout(), QGridLayout)
+    assert layout.spacing() == 3
+    assert layout.horizontalSpacing() == 3
+    assert layout.verticalSpacing() == 3
 
 
 def test_margins(qtbot):

@@ -4,7 +4,7 @@ from typing import Optional, Union
 from qtpy.QtCore import Qt, QObject
 from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
-    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect
+    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout
 
 from qthandy.layout import FlowLayout
 
@@ -167,6 +167,16 @@ def vbox(widget, margin: int = 2, spacing: int = 3) -> QVBoxLayout:
     widget.setLayout(_layout)
     widget.layout().setContentsMargins(margin, margin, margin, margin)
     widget.layout().setSpacing(spacing)
+
+    return _layout
+
+
+def grid(widget, margin: int = 2, h_spacing: int = 3, v_spacing: int = 3) -> QGridLayout:
+    _layout = QGridLayout()
+    _layout.setHorizontalSpacing(h_spacing)
+    _layout.setVerticalSpacing(v_spacing)
+    _layout.setContentsMargins(margin, margin, margin, margin)
+    widget.setLayout(_layout)
 
     return _layout
 

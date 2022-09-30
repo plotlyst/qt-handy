@@ -1,4 +1,4 @@
-from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QSizePolicy, QHBoxLayout, QVBoxLayout, QLabel
+from qtpy.QtWidgets import QWidget, QPushButton, QSpacerItem, QHBoxLayout, QVBoxLayout, QLabel
 
 from qthandy import vbox, clear_layout, hbox, margins, flow, FlowLayout
 
@@ -11,7 +11,7 @@ def test_clear_layout(qtbot):
     layout = vbox(widget)
     layout.addWidget(QPushButton('Btn1', widget))
     layout.addWidget(QPushButton('Btn2', widget))
-    layout.addSpacerItem(QSpacerItem(50, 50, vPolicy=QSizePolicy.Expanding))
+    layout.addSpacerItem(QSpacerItem(50, 50))
 
     clear_layout(widget)
     assert layout.count() == 0

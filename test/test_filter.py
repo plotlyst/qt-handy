@@ -2,7 +2,7 @@ from qtpy.QtCore import Qt, QTimer, QEvent
 from qtpy.QtGui import QMoveEvent
 from qtpy.QtWidgets import QPushButton, QLabel, QApplication
 
-from qthandy.filter import InstantTooltipEventFilter, DragEventFilter
+from qthandy.filter import InstantTooltipEventFilter, DragEventFilter, DisabledClickEventFilter
 
 
 class FakeMouseMove(QMoveEvent):
@@ -42,3 +42,16 @@ def test_drag(qtbot):
         QTimer.singleShot(100, lambda: drop(qtbot, label))
         event = FakeMouseMove(label.rect().bottomLeft(), label.rect().center())
         QApplication.sendEvent(label, event)
+
+
+def test_disabled_click(qtbot):
+    btn = QPushButton()
+    qtbot.addWidget(btn)
+    btn.show()
+
+    filter = DisabledClickEventFilter(btn, slot=lambda: 'test')
+    btn.installEventFilter(filter)
+    btn.setDisabled(True)
+
+    with qtbot.waitSignal(filter.clicked, timeout=1000):
+        qtbot.mouseClick(btn, Qt.LeftButton)

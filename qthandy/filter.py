@@ -49,3 +49,19 @@ class DragEventFilter(QObject):
             self.dragStarted.emit()
             drag.exec_()
         return super(DragEventFilter, self).eventFilter(watched, event)
+
+
+class DisabledClickEventFilter(QObject):
+    clicked = Signal()
+
+    def __init__(self, watched, slot=None):
+        super(DisabledClickEventFilter, self).__init__(watched)
+        self._slot = slot
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if isinstance(watched, QWidget) and event.type() == QEvent.MouseButtonRelease and not watched.isEnabled():
+            self.clicked.emit()
+            if self._slot:
+                self._slot()
+
+        return super(DisabledClickEventFilter, self).eventFilter(watched, event)

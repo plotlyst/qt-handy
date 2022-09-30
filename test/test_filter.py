@@ -1,14 +1,18 @@
-import platform
-from unittest.mock import create_autospec
-
-import pytest
-from qtpy.QtCore import Qt, QEvent, QTimer
-from qtpy.QtWidgets import QPushButton, QLabel
+from qtpy.QtCore import Qt, QTimer, QEvent
+from qtpy.QtGui import QMoveEvent
+from qtpy.QtWidgets import QPushButton, QLabel, QApplication
 
 from qthandy.filter import InstantTooltipEventFilter, DragEventFilter
 
 
-@pytest.mark.skipif(platform.system() == 'Darwin', reason="Cannot run on Darwin")
+class FakeMouseMove(QMoveEvent):
+    def __init__(self, pos, old_pos):
+        super(FakeMouseMove, self).__init__(pos, old_pos)
+
+    def type(self) -> 'QEvent.Type':
+        return QEvent.MouseMove
+
+
 def test_instant_tooltip(qtbot):
     btn = QPushButton('Button')
     qtbot.addWidget(btn)
@@ -16,8 +20,6 @@ def test_instant_tooltip(qtbot):
 
     btn.setToolTip('Test button')
     btn.installEventFilter(InstantTooltipEventFilter(btn))
-    qtbot.wait(50)
-    qtbot.mouseMove(btn)
 
 
 def drop(qtbot, wdg):
@@ -33,17 +35,10 @@ def test_drag(qtbot):
 
     qtbot.wait(50)
 
-    with qtbot.waitSignals([filter.dragStarted, filter.dragFinished]):
+    with qtbot.waitSignals([filter.dragStarted, filter.dragFinished], timeout=1000):
         qtbot.mouseMove(label)
         qtbot.mousePress(label, Qt.LeftButton, delay=30)
 
-        event = create_autospec(QEvent)
-        event.type = lambda: QEvent.MouseMove
-        event.pos = lambda: label.rect().center()
         QTimer.singleShot(100, lambda: drop(qtbot, label))
-        try:
-            filter.eventFilter(label, event)
-        except TypeError:  # coming from super
-            pass
-        except ValueError:
-            pass
+        event = FakeMouseMove(label.rect().bottomLeft(), label.rect().center())
+        QApplication.sendEvent(label, event)

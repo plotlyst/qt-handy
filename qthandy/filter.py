@@ -2,7 +2,7 @@ import pickle
 
 from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray
 from qtpy.QtGui import QCursor, QDrag
-from qtpy.QtWidgets import QWidget, QToolTip
+from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton
 
 
 class InstantTooltipEventFilter(QObject):
@@ -65,3 +65,33 @@ class DisabledClickEventFilter(QObject):
                 self._slot()
 
         return super(DisabledClickEventFilter, self).eventFilter(watched, event)
+
+
+class VisibilityToggleEventFilter(QObject):
+
+    def __init__(self, target: QWidget, watched: QWidget, freezeForMenu: bool = True):
+        super(VisibilityToggleEventFilter, self).__init__(watched)
+        self.target = target
+        self.target.setHidden(True)
+        self._frozen: bool = False
+
+        if freezeForMenu and isinstance(self.target, (QPushButton, QToolButton)) and self.target.menu():
+            self.target.menu().aboutToShow.connect(self.freeze)
+            self.target.menu().aboutToHide.connect(self.resume)
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if self._frozen:
+            return super(VisibilityToggleEventFilter, self).eventFilter(watched, event)
+        if event.type() == QEvent.Enter:
+            self.target.setVisible(True)
+        elif event.type() == QEvent.Leave:
+            self.target.setHidden(True)
+
+        return super(VisibilityToggleEventFilter, self).eventFilter(watched, event)
+
+    def freeze(self):
+        self._frozen = True
+
+    def resume(self):
+        self._frozen = False
+        self.target.setHidden(True)

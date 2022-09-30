@@ -107,7 +107,7 @@ def underline(widget, enabled: bool = True):
     widget.setFont(font)
 
 
-def opaque(wdg, opacity: float = 0.5):
+def translucent(wdg, opacity: float = 0.5):
     op = QGraphicsOpacityEffect(wdg)
     op.setOpacity(opacity)
     wdg.setGraphicsEffect(op)

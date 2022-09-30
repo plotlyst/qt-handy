@@ -1,13 +1,13 @@
 from qtpy.QtWidgets import QLabel
 
-from qthandy import opaque
+from qthandy import translucent
 
 
-def test_opaque(qtbot):
+def test_translucent(qtbot):
     widget = QLabel('Test')
     qtbot.addWidget(widget)
     widget.show()
 
-    opaque(widget)
+    translucent(widget)
 
     assert widget.graphicsEffect()

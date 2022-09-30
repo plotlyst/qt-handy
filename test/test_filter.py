@@ -45,3 +45,5 @@ def test_drag(qtbot):
             filter.eventFilter(label, event)
         except TypeError:  # coming from super
             pass
+        except ValueError:
+            pass

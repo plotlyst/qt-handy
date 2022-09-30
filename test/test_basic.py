@@ -1,3 +1,6 @@
+import sys
+
+import pytest
 from qtpy.QtWidgets import QLabel, QWidget, QPushButton, QApplication, QToolButton, QMessageBox
 
 from qthandy import translucent, hbox, retain_when_hidden, spacer, transparent, busy, btn_popup, ask_confirmation
@@ -70,6 +73,7 @@ def test_transparent_label(qtbot):
     transparent(lbl)
 
 
+@pytest.mark.skipif('PySide6' in sys.modules, reason="Cannot set override cursor with PySide6")
 def test_busy(qtbot):
     @busy
     def busy_func():

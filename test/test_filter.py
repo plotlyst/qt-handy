@@ -1,3 +1,6 @@
+import platform
+
+import pytest
 from qtpy.QtCore import Qt, QTimer, QEvent, QPointF
 from qtpy.QtGui import QMoveEvent, QEnterEvent
 from qtpy.QtWidgets import QPushButton, QLabel, QApplication, QWidget
@@ -44,6 +47,7 @@ def drop(qtbot, wdg):
     qtbot.mouseRelease(wdg, Qt.LeftButton, delay=30)
 
 
+@pytest.mark.skipif(platform.system() == 'Darwin', reason="Cannot run on Darwin")
 def test_drag(qtbot):
     label = QLabel('Test label')
     filter = DragEventFilter(label, 'application/text', lambda x: 'data')

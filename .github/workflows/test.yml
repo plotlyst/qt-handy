@@ -43,12 +43,13 @@ jobs:
           pip install ${{ matrix.pyqt }}
       - name: Test with pytest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DISPLAY: ':99.0'
         run: |
           ./tst.sh
       - if: matrix.pyqt == 'PyQt5' && matrix.python-version == '3.7' && matrix.os == 'ubuntu-latest'
         name: coverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install coveralls
           coveralls --service=github

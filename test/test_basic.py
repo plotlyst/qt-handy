@@ -4,7 +4,7 @@ import pytest
 from qtpy.QtWidgets import QLabel, QWidget, QPushButton, QApplication, QToolButton, QMessageBox
 
 from qthandy import translucent, hbox, retain_when_hidden, spacer, transparent, busy, btn_popup, ask_confirmation
-from test.common import is_darwin
+from test.common import is_darwin, is_pyqt6
 
 
 def test_translucent(qtbot):
@@ -67,7 +67,7 @@ def test_spacer_with_max_stretch(qtbot):
     parent.show()
 
     if is_darwin():
-        assert btn.width() == 156
+        assert btn.width() == 150 if is_pyqt6() else 156
     else:
         assert btn.width() == 150
 

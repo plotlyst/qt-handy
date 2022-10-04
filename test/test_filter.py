@@ -1,4 +1,4 @@
-from qtpy.QtCore import Qt, QTimer, QEvent
+from qtpy.QtCore import Qt, QTimer, QEvent, QPointF
 from qtpy.QtGui import QMoveEvent, QEnterEvent
 from qtpy.QtWidgets import QPushButton, QLabel, QApplication, QWidget
 
@@ -89,10 +89,10 @@ def test_visibility_toggle(qtbot):
     parent.installEventFilter(VisibilityToggleEventFilter(btn, parent))
     assert btn.isHidden()
 
-    event = FakeEnterEvent(parent.rect().center())
+    event = FakeEnterEvent(QPointF(parent.rect().center()))
     QApplication.sendEvent(parent, event)
     assert btn.isVisible()
 
-    event = FakeLeaveEvent(parent.rect().center())
+    event = FakeLeaveEvent(QPointF(parent.rect().center()))
     QApplication.sendEvent(parent, event)
     assert btn.isHidden()

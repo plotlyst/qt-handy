@@ -1,5 +1,3 @@
-import platform
-
 import pytest
 from qtpy.QtCore import Qt, QTimer, QEvent, QPointF
 from qtpy.QtGui import QMoveEvent, QEnterEvent
@@ -8,6 +6,7 @@ from qtpy.QtWidgets import QPushButton, QLabel, QApplication, QWidget
 from qthandy import vbox, btn_popup
 from qthandy.filter import InstantTooltipEventFilter, DragEventFilter, DisabledClickEventFilter, \
     VisibilityToggleEventFilter
+from test.common import is_darwin
 
 
 class FakeMouseMove(QMoveEvent):
@@ -47,7 +46,7 @@ def drop(qtbot, wdg):
     qtbot.mouseRelease(wdg, Qt.LeftButton, delay=30)
 
 
-@pytest.mark.skipif(platform.system() == 'Darwin', reason="Cannot run on Darwin")
+@pytest.mark.skipif(is_darwin(), reason="Cannot run on Darwin")
 def test_drag(qtbot):
     label = QLabel('Test label')
     filter = DragEventFilter(label, 'application/text', lambda x: 'data')

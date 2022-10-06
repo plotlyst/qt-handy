@@ -15,6 +15,16 @@ class FlowLayout(QLayout):
     def addItem(self, item: QLayoutItem):
         self._items.append(item)
 
+    def insertWidget(self, i: int, widget):
+        if i < 0 or i >= self.count():
+            raise ValueError('Given index is invalid')
+
+        self.addWidget(widget)
+        new = self._items.pop(-1)
+
+        self._items.insert(i, new)
+        self.update()
+
     def count(self) -> int:
         return len(self._items)
 

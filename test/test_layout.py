@@ -81,7 +81,7 @@ def test_flow(qtbot):
     qtbot.addWidget(widget)
     widget.show()
 
-    flow(widget)
+    layout_ = flow(widget)
 
     assert isinstance(widget.layout(), FlowLayout)
     assert widget.layout().contentsMargins().left() == 2
@@ -100,3 +100,13 @@ def test_flow(qtbot):
 
     clear_layout(widget)
     assert widget.layout().count() == 0
+
+    layout_.addWidget(QPushButton('1'))
+    layout_.addWidget(QPushButton('2'))
+
+    layout_.insertWidget(1, QPushButton('3'))
+
+    assert widget.layout().count() == 3
+    assert layout_.itemAt(0).widget().text() == '1'
+    assert layout_.itemAt(1).widget().text() == '3'
+    assert layout_.itemAt(2).widget().text() == '2'

@@ -3,11 +3,13 @@ import pickle
 from qtpy import PYSIDE2
 from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray
 from qtpy.QtGui import QCursor, QDrag
-from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton
+from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton, QAbstractButton
+
+from qthandy import translucent
 
 
 class InstantTooltipEventFilter(QObject):
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         super(InstantTooltipEventFilter, self).__init__(parent)
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
@@ -23,8 +25,8 @@ class DragEventFilter(QObject):
     dragStarted = Signal()
     dragFinished = Signal()
 
-    def __init__(self, watched, mimeType: str, dataFunc, grabbed=None):
-        super(DragEventFilter, self).__init__(watched)
+    def __init__(self, parent, mimeType: str, dataFunc, grabbed=None):
+        super(DragEventFilter, self).__init__(parent)
         self._pressed: bool = False
         self._mimeType = mimeType
         self._dataFunc = dataFunc
@@ -58,8 +60,8 @@ class DragEventFilter(QObject):
 class DisabledClickEventFilter(QObject):
     clicked = Signal()
 
-    def __init__(self, watched, slot=None):
-        super(DisabledClickEventFilter, self).__init__(watched)
+    def __init__(self, parent, slot=None):
+        super(DisabledClickEventFilter, self).__init__(parent)
         self._slot = slot
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
@@ -73,15 +75,15 @@ class DisabledClickEventFilter(QObject):
 
 class VisibilityToggleEventFilter(QObject):
 
-    def __init__(self, target: QWidget, watched: QWidget, freezeForMenu: bool = True):
-        super(VisibilityToggleEventFilter, self).__init__(watched)
+    def __init__(self, target: QWidget, parent: QWidget, freezeForMenu: bool = True):
+        super(VisibilityToggleEventFilter, self).__init__(parent)
         self.target = target
         self.target.setHidden(True)
         self._frozen: bool = False
 
         if freezeForMenu and isinstance(self.target, (QPushButton, QToolButton)) and self.target.menu():
-            self.target.menu().aboutToShow.connect(self.freeze)
-            self.target.menu().aboutToHide.connect(self.resume)
+            self.target.menu().aboutToShow.connect(self._freeze)
+            self.target.menu().aboutToHide.connect(self._resume)
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if self._frozen:
@@ -93,9 +95,43 @@ class VisibilityToggleEventFilter(QObject):
 
         return super(VisibilityToggleEventFilter, self).eventFilter(watched, event)
 
-    def freeze(self):
+    def _freeze(self):
         self._frozen = True
 
-    def resume(self):
+    def _resume(self):
         self._frozen = False
         self.target.setHidden(True)
+
+
+class OpacityEventFilter(QObject):
+
+    def __init__(self, parent, enterOpacity: float = 1.0, leaveOpacity: float = 0.4,
+                 ignoreCheckedButton: bool = False):
+        super(OpacityEventFilter, self).__init__(parent)
+        self._enterOpacity = enterOpacity
+        self._leaveOpacity = leaveOpacity
+        self._ignoreCheckedButton = ignoreCheckedButton
+        self._parent = parent
+        if not ignoreCheckedButton or not self._checkedButton(parent):
+            translucent(parent, leaveOpacity)
+        if parent and isinstance(parent, QAbstractButton):
+            parent.toggled.connect(self._btnToggled)
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if self._ignoreCheckedButton and self._checkedButton(watched) or not watched.isEnabled():
+            return super(OpacityEventFilter, self).eventFilter(watched, event)
+        if event.type() == QEvent.Type.Enter:
+            translucent(watched, self._enterOpacity)
+        elif event.type() == QEvent.Type.Leave:
+            translucent(watched, self._leaveOpacity)
+
+        return super(OpacityEventFilter, self).eventFilter(watched, event)
+
+    def _checkedButton(self, obj: QObject) -> bool:
+        return isinstance(obj, QAbstractButton) and obj.isChecked()
+
+    def _btnToggled(self, toggled: bool):
+        if toggled:
+            translucent(self._parent, self._enterOpacity)
+        else:
+            translucent(self._parent, self._leaveOpacity)

@@ -1,5 +1,6 @@
 import pickle
 
+from qtpy import PYSIDE2
 from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray
 from qtpy.QtGui import QCursor, QDrag
 from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton
@@ -47,7 +48,10 @@ class DragEventFilter(QObject):
             drag.setHotSpot(event.pos())
             drag.destroyed.connect(self.dragFinished.emit)
             self.dragStarted.emit()
-            drag.exec()
+            if PYSIDE2:
+                drag.exec_()
+            else:
+                drag.exec()
         return super(DragEventFilter, self).eventFilter(watched, event)
 
 

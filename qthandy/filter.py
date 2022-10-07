@@ -47,7 +47,7 @@ class DragEventFilter(QObject):
             drag.setHotSpot(event.pos())
             drag.destroyed.connect(self.dragFinished.emit)
             self.dragStarted.emit()
-            drag.exec_()
+            drag.exec()
         return super(DragEventFilter, self).eventFilter(watched, event)
 
 

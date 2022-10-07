@@ -5,7 +5,7 @@ from qtpy.QtWidgets import QPushButton, QLabel, QApplication, QWidget
 
 from qthandy import vbox, btn_popup
 from qthandy.filter import InstantTooltipEventFilter, DragEventFilter, DisabledClickEventFilter, \
-    VisibilityToggleEventFilter
+    VisibilityToggleEventFilter, OpacityEventFilter
 from test.common import is_darwin
 
 
@@ -99,3 +99,21 @@ def test_visibility_toggle(qtbot):
     event = FakeLeaveEvent(QPointF(parent.rect().center()))
     QApplication.sendEvent(parent, event)
     assert btn.isHidden()
+
+
+def test_opacity(qtbot):
+    parent = QWidget()
+    btn = QPushButton('Test')
+    btn.setCheckable(True)
+    vbox(parent, margin=10).addWidget(btn)
+    btn.installEventFilter(OpacityEventFilter(btn, ignoreCheckedButton=True))
+    qtbot.addWidget(parent)
+    parent.show()
+
+    enter_event = FakeEnterEvent(QPointF(btn.rect().center()))
+    leave_event = FakeLeaveEvent(QPointF(btn.rect().center()))
+    QApplication.sendEvent(btn, enter_event)
+    QApplication.sendEvent(btn, leave_event)
+
+    btn.setChecked(True)
+    QApplication.sendEvent(btn, enter_event)

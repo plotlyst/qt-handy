@@ -1,4 +1,5 @@
 import pickle
+from typing import List
 
 from qtpy import PYSIDE2
 from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray
@@ -55,6 +56,28 @@ class DragEventFilter(QObject):
             else:
                 drag.exec()
         return super(DragEventFilter, self).eventFilter(watched, event)
+
+
+class DropEventFilter(QObject):
+    dropped = Signal(QMimeData)
+
+    def __init__(self, parent, mimeTypes: List[str], slot=None):
+        super(DropEventFilter, self).__init__(parent)
+        self._mimeTypes = mimeTypes
+        self._slot = slot
+
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if event.type() == QEvent.DragEnter:
+            for mime in self._mimeTypes:
+                if event.mimeData().hasFormat(mime):
+                    event.accept()
+        elif event.type() == QEvent.Drop:
+            self.dropped.emit(event.mimeData())
+            if self._slot:
+                self._slot()
+            event.accept()
+
+        return super(DropEventFilter, self).eventFilter(watched, event)
 
 
 class DisabledClickEventFilter(QObject):

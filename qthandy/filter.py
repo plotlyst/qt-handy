@@ -26,12 +26,15 @@ class DragEventFilter(QObject):
     dragStarted = Signal()
     dragFinished = Signal()
 
-    def __init__(self, parent, mimeType: str, dataFunc, grabbed=None):
+    def __init__(self, parent, mimeType: str, dataFunc, grabbed=None, hideParent: bool = False):
         super(DragEventFilter, self).__init__(parent)
         self._pressed: bool = False
         self._mimeType = mimeType
         self._dataFunc = dataFunc
         self._grabbed = grabbed
+        if hideParent:
+            self.dragStarted.connect(lambda: parent.setHidden(True))
+            self.dragFinished.connect(lambda: parent.setVisible(True))
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() == QEvent.MouseButtonPress:

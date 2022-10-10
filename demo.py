@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         self.lbl = QLabel('Underline Text')
         underline(self.lbl)
         bold(self.lbl)
-        self.lbl.installEventFilter(DragEventFilter(self.lbl, 'application/text', lambda x: 'test'))
+        self.lbl.installEventFilter(DragEventFilter(self.lbl, 'application/text', lambda x: 'test', hideParent=True))
 
         self.btnWithMenu = QPushButton('Btn with menu')
         self.btnWithMenu.setToolTip('Test tooltip')

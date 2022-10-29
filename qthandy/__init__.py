@@ -64,6 +64,10 @@ def busy(func):
     return wrapper_timer
 
 
+def pointy(widget):
+    widget.setCursor(Qt.CursorShape.PointingHandCursor)
+
+
 def retain_when_hidden(widget):
     policy = widget.sizePolicy()
     policy.setRetainSizeWhenHidden(True)

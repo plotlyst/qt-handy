@@ -49,7 +49,7 @@ def drop(qtbot, wdg):
 @pytest.mark.skipif(is_darwin(), reason="Cannot run on Darwin")
 def test_drag(qtbot):
     label = QLabel('Test label')
-    filter = DragEventFilter(label, 'application/text', lambda x: 'data', hideParent=True)
+    filter = DragEventFilter(label, 'application/text', lambda x: 'data', hideTarget=True)
     label.installEventFilter(filter)
     qtbot.addWidget(label)
     label.show()

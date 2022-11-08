@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         self.btnWithMenu.installEventFilter(InstantTooltipEventFilter(self.btnWithMenu))
         self.btnWithMenu.setAcceptDrops(True)
         self.btnWithMenu.installEventFilter(
-            DropEventFilter(self.btnWithMenu, ['application/text'], slot=lambda: print('dropped')))
+            DropEventFilter(self.btnWithMenu, ['application/text'], dropped_slot=lambda mimeData: print('dropped')))
 
         menu = QMenu(self.btnWithMenu)
         menu.addAction('Test', lambda: ask_confirmation('Test'))

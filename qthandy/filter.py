@@ -65,22 +65,34 @@ class DragEventFilter(QObject):
 
 
 class DropEventFilter(QObject):
+    entered = Signal(QMimeData)
+    left = Signal()
     dropped = Signal(QMimeData)
 
-    def __init__(self, parent, mimeTypes: List[str], slot=None):
+    def __init__(self, parent, mimeTypes: List[str], entered_slot=None, left_slot=None, dropped_slot=None):
         super(DropEventFilter, self).__init__(parent)
         self._mimeTypes = mimeTypes
-        self._slot = slot
+        self._entered_slot = entered_slot
+        self._left_slot = left_slot
+        self._dropped_slot = dropped_slot
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() == QEvent.DragEnter:
             for mime in self._mimeTypes:
                 if event.mimeData().hasFormat(mime):
                     event.accept()
+                    if self._entered_slot:
+                        self._entered_slot(event.mimeData())
+                    self.entered.emit(event.mimeData())
+                    break
+        elif event.type() == QEvent.DragLeave:
+            if self._left_slot:
+                self._left_slot()
+            self.left.emit()
         elif event.type() == QEvent.Drop:
+            if self._dropped_slot:
+                self._dropped_slot(event.mimeData())
             self.dropped.emit(event.mimeData())
-            if self._slot:
-                self._slot(event.mimeData())
             event.accept()
 
         return super(DropEventFilter, self).eventFilter(watched, event)

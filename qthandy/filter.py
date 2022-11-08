@@ -80,7 +80,7 @@ class DropEventFilter(QObject):
         elif event.type() == QEvent.Drop:
             self.dropped.emit(event.mimeData())
             if self._slot:
-                self._slot()
+                self._slot(event.mimeData())
             event.accept()
 
         return super(DropEventFilter, self).eventFilter(watched, event)

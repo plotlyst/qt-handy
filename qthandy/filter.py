@@ -22,15 +22,29 @@ class InstantTooltipEventFilter(QObject):
         return super(InstantTooltipEventFilter, self).eventFilter(watched, event)
 
 
+class ObjectReferenceMimeData(QMimeData):
+    def __init__(self):
+        super(ObjectReferenceMimeData, self).__init__()
+        self._reference = None
+
+    def reference(self):
+        return self._reference
+
+    def setReference(self, reference):
+        self._reference = reference
+
+
 class DragEventFilter(QObject):
     dragStarted = Signal()
     dragFinished = Signal()
 
-    def __init__(self, target, mimeType: str, dataFunc, grabbed=None, hideTarget: bool = False, startedSlot=None,
+    def __init__(self, target, mimeType: str, dataFunc, useObjectReference: bool = True, grabbed=None,
+                 hideTarget: bool = False, startedSlot=None,
                  finishedSlot=None):
         super(DragEventFilter, self).__init__(target)
         self._target = target
         self._pressed: bool = False
+        self._useObjectReference = useObjectReference
         self._hideTarget = hideTarget
         self._mimeType = mimeType
         self._dataFunc = dataFunc
@@ -49,8 +63,11 @@ class DragEventFilter(QObject):
                 pix = self._grabbed.grab()
             else:
                 pix = watched.grab()
-            mimedata = QMimeData()
-            mimedata.setData(self._mimeType, QByteArray(pickle.dumps(self._dataFunc(watched))))
+            mimedata = ObjectReferenceMimeData()
+            _object = self._dataFunc(watched)
+            mimedata.setData(self._mimeType, QByteArray(pickle.dumps(_object)))
+            if self._useObjectReference:
+                mimedata.setReference(_object)
             drag.setMimeData(mimedata)
             drag.setPixmap(pix)
             drag.setHotSpot(event.pos())

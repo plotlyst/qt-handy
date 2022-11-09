@@ -1,8 +1,8 @@
 import pickle
-from typing import List
+from typing import List, Optional
 
 from qtpy import PYSIDE2
-from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray
+from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray, Qt, QPoint
 from qtpy.QtGui import QCursor, QDrag
 from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton, QAbstractButton
 
@@ -91,13 +91,17 @@ class DragEventFilter(QObject):
 class DropEventFilter(QObject):
     entered = Signal(QMimeData)
     left = Signal()
+    moved = Signal(Qt.Edge, QPoint)
     dropped = Signal(QMimeData)
 
-    def __init__(self, parent, mimeTypes: List[str], enteredSlot=None, leftSlot=None, droppedSlot=None):
+    def __init__(self, parent, mimeTypes: List[str], motionDetection: Optional[Qt.Orientation] = None, enteredSlot=None,
+                 leftSlot=None, motionSlot=None, droppedSlot=None):
         super(DropEventFilter, self).__init__(parent)
         self._mimeTypes = mimeTypes
+        self._motionDetection = motionDetection
         self._enteredSlot = enteredSlot
         self._leftSlot = leftSlot
+        self._motionSlot = motionSlot
         self._droppedSlot = droppedSlot
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
@@ -118,6 +122,15 @@ class DropEventFilter(QObject):
                 self._droppedSlot(event.mimeData())
             self.dropped.emit(event.mimeData())
             event.accept()
+        elif self._motionDetection and event.type() == QEvent.DragMove:
+            if self._motionDetection == Qt.Horizontal:
+                edge = Qt.LeftEdge if event.pos().x() < watched.width() / 2 else Qt.RightEdge
+            else:
+                edge = Qt.TopEdge if event.pos().y() < watched.height() / 2 else Qt.BottomEdge
+
+            if self._motionSlot:
+                self._motionSlot(edge, event.pos())
+            self.moved.emit(edge, event.pos())
 
         return super(DropEventFilter, self).eventFilter(watched, event)
 

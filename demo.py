@@ -1,5 +1,6 @@
 import sys
 
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QLabel, QPushButton, QMenu
 from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
 
@@ -25,7 +26,8 @@ class MainWindow(QMainWindow):
         self.btnWithMenu.installEventFilter(InstantTooltipEventFilter(self.btnWithMenu))
         self.btnWithMenu.setAcceptDrops(True)
         self.btnWithMenu.installEventFilter(
-            DropEventFilter(self.btnWithMenu, ['application/text'], droppedSlot=lambda mimeData: print('dropped')))
+            DropEventFilter(self.btnWithMenu, ['application/text'], motionDetection=Qt.Orientation.Horizontal,
+                            droppedSlot=lambda mimeData: print('dropped'), motionSlot=lambda edge, pos: print(edge)))
 
         menu = QMenu(self.btnWithMenu)
         menu.addAction('Test', lambda: ask_confirmation('Test'))

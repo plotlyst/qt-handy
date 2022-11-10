@@ -85,6 +85,7 @@ class DragEventFilter(QObject):
             self.dragFinished.emit()
             if self._hideTarget:
                 self._target.setVisible(True)
+            self._pressed = False
         return super(DragEventFilter, self).eventFilter(watched, event)
 
 

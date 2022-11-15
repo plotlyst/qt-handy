@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         self.btnWithMenu.setAcceptDrops(True)
         self.btnWithMenu.installEventFilter(
             DropEventFilter(self.btnWithMenu, ['application/text'], motionDetection=Qt.Orientation.Horizontal,
-                            droppedSlot=lambda mimeData: print('dropped'), motionSlot=lambda edge, pos: print(edge)))
+                            droppedSlot=lambda mimeData: print('dropped')))
 
         menu = QMenu(self.btnWithMenu)
         menu.addAction('Test', lambda: ask_confirmation('Test'))

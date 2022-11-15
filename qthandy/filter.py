@@ -2,9 +2,9 @@ import pickle
 from typing import List, Optional
 
 from qtpy import PYSIDE2, QT5
-from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray, Qt, QPointF
+from qtpy.QtCore import QObject, QEvent, Signal, QMimeData, QByteArray, Qt, QPoint, QPointF
 from qtpy.QtGui import QCursor, QDrag
-from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton, QAbstractButton
+from qtpy.QtWidgets import QWidget, QToolTip, QPushButton, QToolButton, QAbstractButton, QApplication
 
 from qthandy import translucent
 
@@ -44,6 +44,7 @@ class DragEventFilter(QObject):
         super(DragEventFilter, self).__init__(target)
         self._target = target
         self._pressed: bool = False
+        self._pressedPos: Optional[QPoint] = None
         self._useObjectReference = useObjectReference
         self._hideTarget = hideTarget
         self._mimeType = mimeType
@@ -55,14 +56,19 @@ class DragEventFilter(QObject):
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() == QEvent.MouseButtonPress:
             self._pressed = True
+            self._pressedPos = event.pos()
         elif event.type() == QEvent.MouseButtonRelease:
             self._pressed = False
-        elif event.type() == QEvent.MouseMove and self._pressed:
+        elif event.type() == QEvent.MouseMove and self._pressed and (
+                event.pos() - self._pressedPos).manhattanLength() >= QApplication.startDragDistance():
+            self._pressed = False
+            self._pressedPos = None
             drag = QDrag(watched)
             if self._grabbed:
                 pix = self._grabbed.grab()
             else:
                 pix = watched.grab()
+
             mimedata = ObjectReferenceMimeData()
             _object = self._dataFunc(watched)
             mimedata.setData(self._mimeType, QByteArray(pickle.dumps(_object)))
@@ -71,6 +77,7 @@ class DragEventFilter(QObject):
             drag.setMimeData(mimedata)
             drag.setPixmap(pix)
             drag.setHotSpot(event.pos())
+
             if self._startedSlot:
                 self._startedSlot()
             self.dragStarted.emit()
@@ -85,7 +92,6 @@ class DragEventFilter(QObject):
             self.dragFinished.emit()
             if self._hideTarget:
                 self._target.setVisible(True)
-            self._pressed = False
         return super(DragEventFilter, self).eventFilter(watched, event)
 
 

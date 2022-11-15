@@ -43,7 +43,6 @@ class DragEventFilter(QObject):
                  finishedSlot=None):
         super(DragEventFilter, self).__init__(target)
         self._target = target
-        self._pressed: bool = False
         self._pressedPos: Optional[QPoint] = None
         self._useObjectReference = useObjectReference
         self._hideTarget = hideTarget
@@ -55,13 +54,11 @@ class DragEventFilter(QObject):
 
     def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() == QEvent.MouseButtonPress:
-            self._pressed = True
             self._pressedPos = event.pos()
         elif event.type() == QEvent.MouseButtonRelease:
-            self._pressed = False
-        elif event.type() == QEvent.MouseMove and self._pressed and (
+            self._pressedPos = None
+        elif event.type() == QEvent.MouseMove and self._pressedPos and (
                 event.pos() - self._pressedPos).manhattanLength() >= QApplication.startDragDistance():
-            self._pressed = False
             self._pressedPos = None
             drag = QDrag(watched)
             if self._grabbed:

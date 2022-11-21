@@ -2,7 +2,7 @@ import functools
 from typing import Optional, Union
 
 from qtpy.QtCore import Qt, QObject, QSize
-from qtpy.QtGui import QCursor, QMouseEvent
+from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
     QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout
 
@@ -139,9 +139,6 @@ class _PopupMenu(QMenu):
 
     def sizeHint(self) -> QSize:
         return self._widget.sizeHint()
-
-    def mousePressEvent(self, a0: QMouseEvent) -> None:
-        pass
 
 
 def btn_popup_menu(btn: Union[QPushButton, QToolButton], menu: QMenu, show_menu_icon: bool = False):

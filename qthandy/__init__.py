@@ -1,8 +1,8 @@
 import functools
 from typing import Optional, Union
 
-from qtpy.QtCore import Qt, QObject
-from qtpy.QtGui import QCursor
+from qtpy.QtCore import Qt, QObject, QSize
+from qtpy.QtGui import QCursor, QMouseEvent
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
     QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout
 
@@ -123,13 +123,25 @@ def gc(obj: QObject):
 
 
 def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, show_menu_icon: bool = False) -> QMenu:
-    menu = QMenu(btn)
-    action = QWidgetAction(menu)
-    action.setDefaultWidget(popup_widget)
-    menu.addAction(action)
+    menu = _PopupMenu(popup_widget, btn)
     btn_popup_menu(btn, menu, show_menu_icon)
-
     return menu
+
+
+class _PopupMenu(QMenu):
+
+    def __init__(self, widget, parent=None):
+        super().__init__(parent)
+        self._widget = widget
+        action = QWidgetAction(self)
+        action.setDefaultWidget(self._widget)
+        self.addAction(action)
+
+    def sizeHint(self) -> QSize:
+        return self._widget.sizeHint()
+
+    def mousePressEvent(self, a0: QMouseEvent) -> None:
+        pass
 
 
 def btn_popup_menu(btn: Union[QPushButton, QToolButton], menu: QMenu, show_menu_icon: bool = False):

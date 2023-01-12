@@ -1,10 +1,10 @@
 import sys
 
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QLabel, QPushButton, QMenu
+from qtpy.QtWidgets import QLabel, QPushButton
 from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
 
-from qthandy import underline, bold, vbox, btn_popup_menu, ask_confirmation, flow
+from qthandy import underline, bold, vbox, flow, btn_popup
 from qthandy.filter import InstantTooltipEventFilter, DragEventFilter, DropEventFilter
 
 
@@ -27,11 +27,13 @@ class MainWindow(QMainWindow):
         self.btnWithMenu.setAcceptDrops(True)
         self.btnWithMenu.installEventFilter(
             DropEventFilter(self.btnWithMenu, ['application/text'], motionDetection=Qt.Orientation.Horizontal,
-                            droppedSlot=lambda mimeData: print('dropped'), motionSlot=lambda edge, pos: print(edge)))
+                            droppedSlot=lambda mimeData: print('dropped')))
 
-        menu = QMenu(self.btnWithMenu)
-        menu.addAction('Test', lambda: ask_confirmation('Test'))
-        btn_popup_menu(self.btnWithMenu, menu)
+        widget = QWidget(self)
+        btn = QPushButton('test', self.btnWithMenu)
+        vbox(widget).addWidget(btn)
+        btn.clicked.connect(lambda: widget.layout().addWidget(QLabel('another')))
+        btn_popup(self.btnWithMenu, widget)
 
         self.wdgFlow = QWidget()
         flow(self.wdgFlow)

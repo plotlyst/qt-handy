@@ -24,7 +24,7 @@ REQUIREMENTS: dict = {
 
 setup(
     name='qt-handy',
-    version='0.1.0',
+    version='0.0.1',
 
     author='Zsolt Kovari',
     author_email='zsolt@kovaridev.com',

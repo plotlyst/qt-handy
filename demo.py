@@ -4,7 +4,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QLabel, QPushButton
 from qtpy.QtWidgets import QMainWindow, QApplication, QWidget
 
-from qthandy import underline, bold, vbox, flow, btn_popup
+from qthandy import underline, bold, vbox, flow, btn_popup, curved_flow
 from qthandy.filter import InstantTooltipEventFilter, DragEventFilter, DropEventFilter
 
 
@@ -37,13 +37,17 @@ class MainWindow(QMainWindow):
 
         self.wdgFlow = QWidget()
         flow(self.wdgFlow)
+        self.wdgCurvedFlow = QWidget()
+        curved_flow(self.wdgCurvedFlow)
 
         for i in range(15):
             self.wdgFlow.layout().addWidget(QLabel(f'Label {i + 1}'))
+            self.wdgCurvedFlow.layout().addWidget(QLabel(f'Label {i + 1}'))
 
         self.widget.layout().addWidget(self.lbl)
         self.widget.layout().addWidget(self.btnWithMenu)
         self.widget.layout().addWidget(self.wdgFlow)
+        self.widget.layout().addWidget(self.wdgCurvedFlow)
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
     QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout
 
-from qthandy.layout import FlowLayout
+from qthandy.layout import FlowLayout, CurvedFlowLayout
 
 
 def ask_confirmation(message: str, parent=None) -> bool:
@@ -198,6 +198,15 @@ def grid(widget, margin: int = 2, h_spacing: int = 3, v_spacing: int = 3) -> QGr
 
 def flow(widget, margin: int = 2, spacing: int = 3) -> FlowLayout:
     _layout = FlowLayout()
+    widget.setLayout(_layout)
+    widget.layout().setContentsMargins(margin, margin, margin, margin)
+    widget.layout().setSpacing(spacing)
+
+    return _layout
+
+
+def curved_flow(widget, margin: int = 2, spacing: int = 3) -> FlowLayout:
+    _layout = CurvedFlowLayout()
     widget.setLayout(_layout)
     widget.layout().setContentsMargins(margin, margin, margin, margin)
     widget.layout().setSpacing(spacing)

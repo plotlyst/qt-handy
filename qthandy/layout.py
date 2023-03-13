@@ -41,7 +41,7 @@ class FlowLayout(QLayout):
     def hasHeightForWidth(self) -> bool:
         return True
 
-    def heightForWidth(self, width) -> int:
+    def heightForWidth(self, width: int) -> int:
         return self._arrange(QRect(0, 0, width, 0), True)
 
     def setGeometry(self, rect: QRect):
@@ -70,21 +70,64 @@ class FlowLayout(QLayout):
 
         for item in self._items:
             widget = item.widget()
-            spaceX = self.spacing()
-            if spaceX == -1:
-                spaceX = widget.style().layoutSpacing(QSizePolicy.PushButton, QSizePolicy.PushButton,
-                                                      Qt.Horizontal)
-            spaceY = self.spacing()
-            if spaceY == -1:
-                spaceY = widget.style().layoutSpacing(QSizePolicy.PushButton, QSizePolicy.PushButton,
-                                                      Qt.Vertical)
+            spacing = self.spacing()
+            if spacing == -1:
+                spacing = widget.style().layoutSpacing(QSizePolicy.PushButton, QSizePolicy.PushButton,
+                                                       Qt.Horizontal)
 
-            nextX = x + item.sizeHint().width() + spaceX
-            if nextX - spaceX > effectiveRect.right() and lineHeight > 0:
+            nextX = x + item.sizeHint().width() + spacing
+            if nextX - spacing > effectiveRect.right() and lineHeight > 0:
                 x = effectiveRect.x()
-                y = y + lineHeight + spaceY
-                nextX = x + item.sizeHint().width() + spaceX
+                y = y + lineHeight + spacing
+                nextX = x + item.sizeHint().width() + spacing
                 lineHeight = 0
+
+            if not testOnly:
+                item.setGeometry(QRect(QPoint(x, y), item.sizeHint()))
+
+            x = nextX
+            lineHeight = max(lineHeight, item.sizeHint().height())
+
+        return y + lineHeight - rect.y() + bottom
+
+
+class CurvedFlowLayout(FlowLayout):
+
+    def _arrange(self, rect: QRect, testOnly: bool) -> int:
+        left, top, right, bottom = self.getContentsMargins()
+        effectiveRect: QRect = rect.adjusted(left, top, -right, -bottom)
+        x = effectiveRect.x()
+        y = effectiveRect.y()
+        lineHeight = 0
+
+        forward = True
+
+        for item in self._items:
+            widget = item.widget()
+            spacing = self.spacing()
+            if spacing == -1:
+                spacing = widget.style().layoutSpacing(QSizePolicy.PushButton, QSizePolicy.PushButton,
+                                                       Qt.Horizontal)
+            if forward:
+                nextX = x + item.sizeHint().width() + spacing
+                if nextX - spacing > effectiveRect.right() and lineHeight > 0:
+                    forward = False
+                    x = nextX - spacing - item.sizeHint().width()
+                    nextX = x - item.sizeHint().width() - spacing
+                    y = y + lineHeight + spacing
+                    lineHeight = 0
+            else:
+                nextX = x - item.sizeHint().width() - spacing
+                if nextX + spacing < effectiveRect.x() and lineHeight > 0:
+                    forward = True
+                    x = effectiveRect.x()
+                    nextX = x + item.sizeHint().width() + spacing
+                    y = y + lineHeight + spacing
+
+                    lineHeight = 0
+
+            if not forward:
+                x = x - item.sizeHint().width()
 
             if not testOnly:
                 item.setGeometry(QRect(QPoint(x, y), item.sizeHint()))

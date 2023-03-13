@@ -37,19 +37,21 @@ def vspacer(max_height: Optional[int] = None) -> QWidget:
     return spacer(max_height, vertical=True)
 
 
-def line(vertical: bool = False, parent=None) -> QFrame:
+def line(vertical: bool = False, parent=None, color=None) -> QFrame:
     line_ = QFrame(parent)
     if vertical:
         line_.setFrameShape(QFrame.VLine)
     else:
         line_.setFrameShape(QFrame.HLine)
     line_.setFrameShadow(QFrame.Sunken)
+    if color:
+        line_.setStyleSheet(f'background-color: {color}; border: 1px solid {color};')
 
     return line_
 
 
-def vline(parent=None) -> QFrame:
-    return line(vertical=True, parent=parent)
+def vline(parent=None, color=None) -> QFrame:
+    return line(vertical=True, parent=parent, color=color)
 
 
 def busy(func):

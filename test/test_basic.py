@@ -2,10 +2,10 @@ import sys
 
 import pytest
 from qtpy.QtCore import QSize
-from qtpy.QtWidgets import QLabel, QWidget, QPushButton, QApplication, QToolButton, QMessageBox
+from qtpy.QtWidgets import QLabel, QWidget, QPushButton, QApplication, QToolButton, QMessageBox, QSizePolicy
 
 from qthandy import translucent, hbox, retain_when_hidden, spacer, transparent, busy, btn_popup, ask_confirmation, \
-    incr_icon, decr_icon
+    incr_icon, decr_icon, sp
 from test.common import is_darwin, is_pyqt6
 
 
@@ -131,3 +131,17 @@ def test_incr_icon(qtbot):
 
     assert btn.iconSize().width() == 20
     assert btn.iconSize().height() == 20
+
+
+def test_sizepolicy_setup(qtbot):
+    widget = QWidget()
+    qtbot.addWidget(widget)
+
+    pol: QSizePolicy = widget.sizePolicy()
+    assert pol.horizontalPolicy() == QSizePolicy.Policy.Preferred
+    assert pol.verticalPolicy() == QSizePolicy.Policy.Preferred
+
+    sp(widget).h_max()
+    pol = widget.sizePolicy()
+    assert pol.horizontalPolicy() == QSizePolicy.Policy.Maximum
+    assert pol.verticalPolicy() == QSizePolicy.Policy.Preferred

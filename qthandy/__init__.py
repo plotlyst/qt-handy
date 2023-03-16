@@ -240,3 +240,72 @@ def margins(widget, left=None, top=None, right=None, bottom=None):
         margins_.setBottom(bottom)
 
     widget.layout().setContentsMargins(margins_)
+
+
+class SizePolicySetup:
+
+    def __init__(self, widget):
+        super().__init__()
+        self._widget: QWidget = widget
+
+    def h_exp(self) -> 'SizePolicySetup':
+        self._set_h_policy(QSizePolicy.Policy.Expanding)
+        return self
+
+    def v_exp(self) -> 'SizePolicySetup':
+        self._set_v_policy(QSizePolicy.Policy.Expanding)
+        return self
+
+    def h_preferred(self) -> 'SizePolicySetup':
+        self._set_h_policy(QSizePolicy.Policy.Preferred)
+        return self
+
+    def v_preferred(self) -> 'SizePolicySetup':
+        self._set_v_policy(QSizePolicy.Policy.Preferred)
+        return self
+
+    def h_fixed(self) -> 'SizePolicySetup':
+        self._set_h_policy(QSizePolicy.Policy.Fixed)
+        return self
+
+    def v_fixed(self) -> 'SizePolicySetup':
+        self._set_v_policy(QSizePolicy.Policy.Fixed)
+        return self
+
+    def h_max(self) -> 'SizePolicySetup':
+        self._set_h_policy(QSizePolicy.Policy.Maximum)
+        return self
+
+    def v_max(self) -> 'SizePolicySetup':
+        self._set_v_policy(QSizePolicy.Policy.Maximum)
+        return self
+
+    def h_min(self) -> 'SizePolicySetup':
+        self._set_h_policy(QSizePolicy.Policy.Minimum)
+        return self
+
+    def v_min(self) -> 'SizePolicySetup':
+        self._set_v_policy(QSizePolicy.Policy.Minimum)
+        return self
+
+    def h_min_exp(self) -> 'SizePolicySetup':
+        self._set_h_policy(QSizePolicy.Policy.MinimumExpanding)
+        return self
+
+    def v_min_exp(self) -> 'SizePolicySetup':
+        self._set_v_policy(QSizePolicy.Policy.MinimumExpanding)
+        return self
+
+    def _set_h_policy(self, flag):
+        pol = self._widget.sizePolicy()
+        pol.setHorizontalPolicy(flag)
+        self._widget.setSizePolicy(pol)
+
+    def _set_v_policy(self, flag):
+        pol = self._widget.sizePolicy()
+        pol.setVerticalPolicy(flag)
+        self._widget.setSizePolicy(pol)
+
+
+def sp(widget) -> SizePolicySetup:
+    return SizePolicySetup(widget)

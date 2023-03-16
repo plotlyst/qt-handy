@@ -1,9 +1,11 @@
 import sys
 
 import pytest
+from qtpy.QtCore import QSize
 from qtpy.QtWidgets import QLabel, QWidget, QPushButton, QApplication, QToolButton, QMessageBox
 
-from qthandy import translucent, hbox, retain_when_hidden, spacer, transparent, busy, btn_popup, ask_confirmation
+from qthandy import translucent, hbox, retain_when_hidden, spacer, transparent, busy, btn_popup, ask_confirmation, \
+    incr_icon, decr_icon
 from test.common import is_darwin, is_pyqt6
 
 
@@ -108,3 +110,24 @@ def test_confirmation(qtbot, monkeypatch):
     monkeypatch.setattr(QMessageBox, "question", lambda *args: QMessageBox.No)  # confirm
     confirmed = ask_confirmation('Confirmation')
     assert not confirmed
+
+
+def test_incr_icon(qtbot):
+    btn = QPushButton()
+    qtbot.addWidget(btn)
+
+    btn.setIconSize(QSize(16, 16))
+    incr_icon(btn)
+
+    assert btn.iconSize().width() == 17
+    assert btn.iconSize().height() == 17
+
+    decr_icon(btn)
+
+    assert btn.iconSize().width() == 16
+    assert btn.iconSize().height() == 16
+
+    incr_icon(btn, 4)
+
+    assert btn.iconSize().width() == 20
+    assert btn.iconSize().height() == 20

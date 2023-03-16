@@ -4,7 +4,7 @@ from typing import Optional, Union
 from qtpy.QtCore import Qt, QObject, QSize
 from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
-    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout
+    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout, QAbstractButton
 
 from qthandy.layout import FlowLayout, CurvedFlowLayout
 
@@ -81,6 +81,18 @@ def transparent(widget):
         widget.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
     else:
         widget.setStyleSheet(f'{widget.__class__.__name__} {{border: 0px; background-color: rgba(0, 0, 0, 0);}}')
+
+
+def incr_icon(widget, step: int = 1):
+    if isinstance(widget, QAbstractButton):
+        size = widget.iconSize()
+        size.setWidth(size.width() + step)
+        size.setHeight(size.height() + step)
+        widget.setIconSize(size)
+
+
+def decr_icon(widget, step: int = 1):
+    incr_icon(widget, -step)
 
 
 def incr_font(widget, step: int = 1):

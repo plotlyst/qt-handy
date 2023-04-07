@@ -1,10 +1,10 @@
 import functools
 from typing import Optional, Union
 
-from qtpy.QtCore import Qt, QObject, QSize
+from qtpy.QtCore import Qt, QObject
 from qtpy.QtGui import QCursor
-from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QWidgetAction, \
-    QPushButton, QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout, QAbstractButton
+from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QPushButton, \
+    QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout, QAbstractButton
 
 from qthandy.layout import FlowLayout, CurvedFlowLayout
 
@@ -138,21 +138,30 @@ def gc(obj: QObject):
 
 def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, show_menu_icon: bool = False) -> QMenu:
     menu = _PopupMenu(popup_widget, btn)
-    btn_popup_menu(btn, menu, show_menu_icon)
     return menu
 
 
-class _PopupMenu(QMenu):
+class _PopupMenu(QWidget):
+    def __init__(self, widget, parent, transparent: bool = False):
+        super(_PopupMenu, self).__init__(parent)
+        self.setWindowFlags(Qt.WindowType.Popup | Qt.WindowType.FramelessWindowHint |
+                            Qt.WindowType.NoDropShadowWindowHint)
+        if transparent:
+            self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
-    def __init__(self, widget, parent=None):
-        super().__init__(parent)
-        self._widget = widget
-        action = QWidgetAction(self)
-        action.setDefaultWidget(self._widget)
-        self.addAction(action)
+        vbox(self)
+        if isinstance(parent, QAbstractButton):
+            parent.clicked.connect(self.exec)
+        self.layout().addWidget(widget)
 
-    def sizeHint(self) -> QSize:
-        return self._widget.sizeHint()
+    def exec(self):
+        pos = QCursor.pos()
+        screen_rect = QApplication.screenAt(pos).availableGeometry()
+        w, h = self.width() + 5, self.height() + 5
+        pos.setX(min(pos.x() - self.layout().contentsMargins().left(), screen_rect.right() - w))
+        pos.setY(min(pos.y() - 4, screen_rect.bottom() - h))
+        self.move(pos)
+        self.show()
 
 
 def btn_popup_menu(btn: Union[QPushButton, QToolButton], menu: QMenu, show_menu_icon: bool = False):

@@ -96,10 +96,10 @@ def test_btn_popup(qtbot):
     btn.show()
 
     lbl = QLabel('Test')
-    btn_popup(btn, lbl)
+    popup = btn_popup(btn, lbl)
 
-    assert btn.menu()
-    assert btn.popupMode() == QToolButton.ToolButtonPopupMode.InstantPopup
+    assert popup
+    assert popup.parent() is btn
 
 
 def test_confirmation(qtbot, monkeypatch):

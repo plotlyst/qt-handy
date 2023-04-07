@@ -1,7 +1,7 @@
 import functools
 from typing import Optional, Union
 
-from qtpy.QtCore import Qt, QObject
+from qtpy.QtCore import Qt, QObject, Signal
 from qtpy.QtGui import QCursor
 from qtpy.QtWidgets import QWidget, QApplication, QMessageBox, QSizePolicy, QFrame, QMenu, QLabel, QPushButton, \
     QToolButton, QVBoxLayout, QHBoxLayout, QLayout, QGraphicsOpacityEffect, QGridLayout, QAbstractButton
@@ -136,14 +136,12 @@ def gc(obj: QObject):
     obj.deleteLater()
 
 
-def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, show_menu_icon: bool = False) -> QMenu:
-    menu = _PopupMenu(popup_widget, btn)
-    return menu
+class PopupWidget(QWidget):
+    aboutToShow = Signal()
+    aboutToHide = Signal()
 
-
-class _PopupMenu(QWidget):
     def __init__(self, widget, parent, transparent: bool = False):
-        super(_PopupMenu, self).__init__(parent)
+        super(PopupWidget, self).__init__(parent)
         self.setWindowFlags(Qt.WindowType.Popup | Qt.WindowType.FramelessWindowHint |
                             Qt.WindowType.NoDropShadowWindowHint)
         if transparent:
@@ -154,6 +152,10 @@ class _PopupMenu(QWidget):
             parent.clicked.connect(self.exec)
         self.layout().addWidget(widget)
 
+    def hideEvent(self, e):
+        self.aboutToHide.emit()
+        e.accept()
+
     def exec(self):
         pos = QCursor.pos()
         screen_rect = QApplication.screenAt(pos).availableGeometry()
@@ -161,7 +163,13 @@ class _PopupMenu(QWidget):
         pos.setX(min(pos.x() - self.layout().contentsMargins().left(), screen_rect.right() - w))
         pos.setY(min(pos.y() - 4, screen_rect.bottom() - h))
         self.move(pos)
+        self.aboutToShow.emit()
         self.show()
+
+
+def btn_popup(btn: Union[QPushButton, QToolButton], popup_widget, transparent: bool = False) -> PopupWidget:
+    menu = PopupWidget(popup_widget, btn, transparent)
+    return menu
 
 
 def btn_popup_menu(btn: Union[QPushButton, QToolButton], menu: QMenu, show_menu_icon: bool = False):

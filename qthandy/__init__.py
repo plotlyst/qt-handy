@@ -45,7 +45,7 @@ def line(vertical: bool = False, parent=None, color=None) -> QFrame:
         line_.setFrameShape(QFrame.HLine)
     line_.setFrameShadow(QFrame.Sunken)
     if color:
-        line_.setStyleSheet(f'background-color: {color}; border: 1px solid {color};')
+        line_.setStyleSheet(f'background-color: {color}; border: 1px outset {color};')
 
     return line_
 

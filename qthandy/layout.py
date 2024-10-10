@@ -49,7 +49,15 @@ class FlowLayout(QLayout):
         return self.minimumSize()
 
     def minimumSize(self) -> QSize:
+        parent = self.parentWidget()
+        if parent:
+            test_width = parent.width()
+        else:
+            test_width = 100
+
+        test_height = self._arrange(QRect(0, 0, test_width, 0), True)
         size = QSize()
+        size.setHeight(test_height)
         for item in self._items:
             size = size.expandedTo(item.minimumSize())
 

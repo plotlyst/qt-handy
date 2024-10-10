@@ -24,7 +24,7 @@ REQUIREMENTS: dict = {
 
 setup(
     name='qt-handy',
-    version='0.3.3',
+    version='0.4.0',
     author='Zsolt Kovari',
     author_email='zsolt@kovaridev.com',
     description='A collection of useful Qt utilities and event filters for PyQt/PySide',

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from qtpy.QtCore import QRect, Qt, QSize, QPoint
-from qtpy.QtWidgets import QSizePolicy, QLayout, QLayoutItem
+from qtpy.QtWidgets import QSizePolicy, QLayout, QLayoutItem, QSpacerItem
 
 
 # based on https://doc.qt.io/qt-5/qtwidgets-layouts-flowlayout-example.html
@@ -76,6 +76,12 @@ class FlowLayout(QLayout):
         for item in self._items:
             widget = item.widget()
             if widget and widget.isHidden():
+                continue
+            if isinstance(item, QSpacerItem):
+                # Move to the next line
+                x = effectiveRect.x()
+                y = y + lineHeight + self.spacing()
+                lineHeight = 0
                 continue
 
             spacing = self.spacing()
